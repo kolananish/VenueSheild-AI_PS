@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from "react"
 import { MessageCircle, Clock, Zap } from "lucide-react"
 
+interface Message {
+    text: string
+    sender: "ai" | "operator"
+    delay: number
+}
+
 const conversations = [
     {
         title: "Crowd Density Alert",
@@ -96,7 +102,7 @@ export function AITeamSection() {
     const sectionRef = useRef<HTMLElement>(null)
     const [isVisible, setIsVisible] = useState(false)
     const [currentConversation, setCurrentConversation] = useState(0)
-    const [displayedMessages, setDisplayedMessages] = useState<any[]>([])
+    const [displayedMessages, setDisplayedMessages] = useState<Message[]>([])
     const [isTyping, setIsTyping] = useState(false)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const chatContainerRef = useRef<HTMLDivElement>(null)

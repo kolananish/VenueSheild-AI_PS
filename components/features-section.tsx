@@ -155,7 +155,7 @@ const AnimatedPredictiveDemo = ({ isActive }: { isActive: boolean }) => {
 
     const maxValue = 100
     const chartHeight = 64
-    const chartWidth = 100 // percentage
+    const _chartWidth = 100 // percentage
 
     const getPath = () => {
         const points = dataPoints.map((point, index) => {

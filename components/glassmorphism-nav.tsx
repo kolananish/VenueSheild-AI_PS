@@ -64,7 +64,7 @@ export function GlassmorphismNav() {
         return () => clearTimeout(timer)
     }, []) // Removed lastScrollY dependency to prevent infinite re-renders
 
-    const scrollToTop = () => {
+    const _scrollToTop = () => {
         console.log("[v0] Scrolling to top")
         window.scrollTo({ top: 0, behavior: "smooth" })
     }

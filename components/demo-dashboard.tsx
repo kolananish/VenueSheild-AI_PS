@@ -245,13 +245,13 @@ function CrowdForecastChart() {
 }
 
 export default function DemoDashboard() {
-    const [activeSection, setActiveSection] = useState("dashboard")
+    const [_activeSection, _setActiveSection] = useState("dashboard")
     const [currentTime, setCurrentTime] = useState(new Date())
     const [selectedCamera, setSelectedCamera] = useState<number | null>(null)
-    const [alerts, setAlerts] = useState(initialAlerts)
+    const [alerts, _setAlerts] = useState(initialAlerts)
     const [safetyScore, setSafetyScore] = useState(87)
     const [totalOccupancy, setTotalOccupancy] = useState(1700)
-    const [activeIncidents, setActiveIncidents] = useState(2)
+    const [activeIncidents, _setActiveIncidents] = useState(2)
     const [notificationsOpen, setNotificationsOpen] = useState(false)
     const [settingsOpen, setSettingsOpen] = useState(false)
 
