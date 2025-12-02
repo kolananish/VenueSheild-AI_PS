@@ -370,9 +370,7 @@ export default function DemoLayout({
                     >
                       <div
                         className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          isSelected
-                            ? "bg-emerald-500/20"
-                            : "bg-slate-700"
+                          isSelected ? "bg-emerald-500/20" : "bg-slate-700"
                         }`}
                       >
                         <VideoIcon className="w-5 h-5" />
