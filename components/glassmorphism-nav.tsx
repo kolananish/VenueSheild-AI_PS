@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,63 +14,48 @@ const navigation = [
 
 export function GlassmorphismNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const lastScrollY = useRef(0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setHasLoaded(true);
     }, 100);
 
-    const controlNavbar = () => {
-      if (typeof window !== "undefined") {
-        const currentScrollY = window.scrollY;
-
-        console.log(
-          "[v0] Scroll event - currentScrollY:",
-          currentScrollY,
-          "lastScrollY:",
-          lastScrollY.current,
-        );
-
-        // Only hide/show after scrolling past 50px to avoid flickering at top
-        if (currentScrollY > 50) {
-          if (
-            currentScrollY > lastScrollY.current &&
-            currentScrollY - lastScrollY.current > 5
-          ) {
-            // Scrolling down - hide navbar
-            console.log("[v0] Hiding navbar - scrolling down");
-            setIsVisible(false);
-          } else if (lastScrollY.current - currentScrollY > 5) {
-            // Scrolling up - show navbar
-            console.log("[v0] Showing navbar - scrolling up");
-            setIsVisible(true);
-          }
-        } else {
-          // Always show navbar when near top
-          console.log("[v0] Showing navbar - near top");
-          setIsVisible(true);
-        }
-
-        lastScrollY.current = currentScrollY;
+    const handleScroll = () => {
+      const featuresSection = document.querySelector("#features");
+      const testimonialsSection = document.querySelector("#testimonials");
+      
+      const navbarHeight = 80;
+      
+      // Check if we've reached the testimonials section (end of light bg sections)
+      let reachedTestimonials = false;
+      if (testimonialsSection) {
+        const testimonialsRect = testimonialsSection.getBoundingClientRect();
+        reachedTestimonials = testimonialsRect.top <= navbarHeight;
       }
+      
+      // Check if we've entered the features section (start of light bg sections)
+      let enteredLightSections = false;
+      if (featuresSection) {
+        const featuresRect = featuresSection.getBoundingClientRect();
+        enteredLightSections = featuresRect.top <= navbarHeight;
+      }
+      
+      // Go dark when we're in the light background sections (features + ai-team)
+      // but not yet at testimonials
+      const shouldBeDark = enteredLightSections && !reachedTestimonials;
+      setIsScrolled(shouldBeDark);
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", controlNavbar, { passive: true });
-      console.log("[v0] Scroll listener added");
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial position
 
-      return () => {
-        window.removeEventListener("scroll", controlNavbar);
-        clearTimeout(timer);
-        console.log("[v0] Scroll listener removed");
-      };
-    }
-
-    return () => clearTimeout(timer);
-  }, []); // Removed lastScrollY dependency to prevent infinite re-renders
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const _scrollToTop = () => {
     console.log("[v0] Scrolling to top");
@@ -113,19 +98,19 @@ export function GlassmorphismNav() {
     <>
       <nav
         className={`fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-          isVisible
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-20 md:-translate-y-24 opacity-0"
-        } ${hasLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          hasLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}
         style={{
-          transition: hasLoaded
-            ? "all 0.5s ease-out"
-            : "opacity 0.8s ease-out, transform 0.8s ease-out",
+          transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
         }}
       >
         {/* Main Navigation */}
         <div className="w-[90vw] max-w-xs md:max-w-4xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-3 md:px-6 md:py-2">
+          <div className={`backdrop-blur-md rounded-full px-4 py-3 md:px-6 md:py-2 transition-all duration-500 ${
+            isScrolled 
+              ? "bg-slate-900/85 border border-slate-700/50 shadow-lg" 
+              : "bg-white/10 border border-white/20"
+          }`}>
             <div className="flex items-center justify-between">
               {/* Logo - Updated alt text */}
               <Link
@@ -172,7 +157,7 @@ export function GlassmorphismNav() {
                   href="/demo"
                   className="relative bg-white hover:bg-gray-50 text-black font-medium px-6 py-2 rounded-full flex items-center transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer group"
                 >
-                  <span className="mr-2">Book a Pilot</span>
+                  <span className="mr-2">Demo</span>
                   <ArrowRight
                     size={16}
                     className="transition-transform duration-300 group-hover:translate-x-1"
@@ -226,7 +211,11 @@ export function GlassmorphismNav() {
                 : "opacity-0 -translate-y-8 scale-95 pointer-events-none"
             }`}
           >
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-2xl">
+            <div className={`backdrop-blur-md rounded-2xl p-4 shadow-2xl transition-all duration-500 ${
+              isScrolled 
+                ? "bg-slate-900/85 border border-slate-700/50" 
+                : "bg-white/10 border border-white/20"
+            }`}>
               <div className="flex flex-col space-y-1">
                 {navigation.map((item, index) =>
                   item.href.startsWith("/") ? (
@@ -275,7 +264,7 @@ export function GlassmorphismNav() {
                   }}
                   onClick={() => setIsOpen(false)}
                 >
-                  <span className="mr-2">Book a Pilot</span>
+                  <span className="mr-2">Demo</span>
                   <ArrowRight
                     size={16}
                     className="transition-transform duration-300 group-hover:translate-x-1"

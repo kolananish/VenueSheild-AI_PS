@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import RotatingText from "./RotatingText";
+import Link from "next/link";
 
 const ArrowRight = () => (
   <svg
@@ -13,22 +14,6 @@ const ArrowRight = () => (
       strokeLinejoin="round"
       strokeWidth={2}
       d="M9 5l7 7-7 7"
-    />
-  </svg>
-);
-
-const Play = () => (
-  <svg
-    className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z"
     />
   </svg>
 );
@@ -79,22 +64,15 @@ export function HeroSection() {
 
         {/* CTA Buttons - Updated button text */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 sm:mb-16 animate-fade-in-buttons">
-          <Button
-            size="lg"
-            className="bg-white text-black rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 hover:bg-gray-50 hover:scale-105 hover:shadow-lg group cursor-pointer relative overflow-hidden"
-          >
-            Book a Pilot
-            <ArrowRight />
-          </Button>
-
-          <Button
-            variant="outline"
-            size="lg"
-            className="rounded-full px-8 py-4 text-lg font-medium border-border hover:bg-accent transition-all duration-200 hover:scale-105 group bg-transparent cursor-pointer"
-          >
-            <Play />
-            View Demo
-          </Button>
+          <Link href="/demo">
+            <Button
+              size="lg"
+              className="bg-white text-black rounded-full px-8 py-4 text-lg font-medium transition-all duration-300 hover:bg-gray-50 hover:scale-105 hover:shadow-lg group cursor-pointer relative overflow-hidden"
+            >
+              Demo
+              <ArrowRight />
+            </Button>
+          </Link>
         </div>
 
         {/* Trust Indicators - Updated trust indicators for venue types */}
