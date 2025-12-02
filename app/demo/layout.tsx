@@ -34,6 +34,23 @@ const navItems = [
   { href: "/demo/compliance", icon: Shield, label: "Compliance" },
 ];
 
+const demoVideos = [
+  {
+    id: "demo",
+    title: "Live Detection Demo",
+    description: "Real-time AI monitoring showcase",
+    src: "/videos/video-demo.mp4",
+    icon: Camera,
+  },
+  {
+    id: "threat",
+    title: "Threat Detection",
+    description: "Security threat identification demo",
+    src: "/videos/video-threat.mp4",
+    icon: AlertTriangle,
+  },
+];
+
 export default function DemoLayout({
   children,
 }: {
@@ -44,6 +61,7 @@ export default function DemoLayout({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(demoVideos[0]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -324,7 +342,7 @@ export default function DemoLayout({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-4xl mx-4"
+              className="relative w-full max-w-5xl mx-4"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
@@ -335,11 +353,50 @@ export default function DemoLayout({
                 <X className="w-6 h-6" />
               </button>
 
+              {/* Video Selector Tabs */}
+              <div className="flex gap-2 mb-4">
+                {demoVideos.map((video) => {
+                  const isSelected = selectedVideo.id === video.id;
+                  const VideoIcon = video.icon;
+                  return (
+                    <button
+                      key={video.id}
+                      onClick={() => setSelectedVideo(video)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
+                        isSelected
+                          ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
+                          : "bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700/80 hover:border-slate-600"
+                      }`}
+                    >
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          isSelected
+                            ? "bg-emerald-500/20"
+                            : "bg-slate-700"
+                        }`}
+                      >
+                        <VideoIcon className="w-5 h-5" />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-medium">{video.title}</div>
+                        <div className="text-xs opacity-70">
+                          {video.description}
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <div className="ml-2 w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
               {/* Video Container */}
               <div className="relative rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-slate-700/50">
                 <div className="aspect-video">
                   <video
-                    src="/videos/video-demo.mp4"
+                    key={selectedVideo.src}
+                    src={selectedVideo.src}
                     controls
                     autoPlay
                     className="w-full h-full object-contain bg-black"
@@ -349,7 +406,7 @@ export default function DemoLayout({
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                     <span className="text-white/90 text-sm font-medium">
-                      VenueShield AI - Live Detection Demo
+                      VenueShield AI - {selectedVideo.title}
                     </span>
                   </div>
                 </div>
