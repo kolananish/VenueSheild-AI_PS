@@ -14,6 +14,7 @@ import {
   BarChart3,
   LineChart,
   PieChart,
+  ChevronDown,
   Download,
   RefreshCw,
   Zap,
