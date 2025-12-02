@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield,
   Camera,
@@ -15,6 +15,8 @@ import {
   ArrowLeft,
   User,
   LogOut,
+  Play,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,6 +43,7 @@ export default function DemoLayout({
   const [currentTime, setCurrentTime] = useState(new Date());
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -73,10 +76,14 @@ export default function DemoLayout({
           </div>
 
           <div className="flex items-center gap-2 text-sm">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+            <button
+              onClick={() => setVideoModalOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all cursor-pointer group"
+            >
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <span className="text-emerald-400 font-medium">Live Demo</span>
-            </div>
+              <Play className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+            </button>
             <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-lg">
               <Clock className="w-4 h-4 text-slate-400" />
               <span className="text-slate-300 font-mono">
@@ -301,6 +308,57 @@ export default function DemoLayout({
         {/* Main Content */}
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {videoModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            onClick={() => setVideoModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-4xl mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setVideoModalOpen(false)}
+                className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors rounded-full hover:bg-white/10"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Video Container */}
+              <div className="relative rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-slate-700/50">
+                <div className="aspect-video">
+                  <video
+                    src="/videos/video-demo.mp4"
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain bg-black"
+                  />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-none">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-white/90 text-sm font-medium">
+                      VenueShield AI - Live Detection Demo
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
